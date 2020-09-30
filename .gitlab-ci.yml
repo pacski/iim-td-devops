@@ -20,11 +20,12 @@ build:
     - master
 tests:
   stage: tests
-  image: node:12
+  image: circleci/node:12-browsers
   script:
     - npm install
     - npm install -g @angular/cli
-    - ng build
+    - ng test --no-watch --browsers=ChromeHeadlessCI
+    # - ng build
   cache:
     paths:
       - ./node_modules
