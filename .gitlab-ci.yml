@@ -1,23 +1,24 @@
 stages:
+  - build
   - tests
-  #- build
+  - deploy
 
-#build:
-#  stage: build
-#  image: node:12
-#  script:
-#    - npm install
-#    - npm install -g @angular/cli
-#    - ng build
-#   cache:
-#     paths:
-#       - ./node_modules
-#  artifacts:
-#    expire_in: 1 hour
-#    paths:
-#      - dist/my-app
-#  only:
-#    - master
+build:
+ stage: build
+ image: node:12
+ script:
+   - npm install
+   - npm install -g @angular/cli
+   - ng build
+  cache:
+    paths:
+      - ./node_modules
+ artifacts:
+   expire_in: 1 hour
+   paths:
+     - dist/my-app
+ only:
+   - master
 
 tests:
   stage: tests
@@ -29,5 +30,15 @@ tests:
   # cache:
   #   paths:
   #     - ./node_modules
+  only:
+    - master
+deploy:
+  stage: deploy
+  image: ruby:2.6
+  script:
+    # - apt-get update -qy
+    # - apt-get install -yqq ruby ruby-dev nodejs --silent
+    - gem install dpl
+    - dpl --provider=heroku --app=$HEROKU_APP --api=$HEROKU_KEY --skip_cleanup=true
   only:
     - master
